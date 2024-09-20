@@ -1,3 +1,4 @@
+//Poliformismo, quando pegamos a propriedade da função construtora e coloca em outras funções
 function Conta(agencia, conta, saldo) {
     this.agencia = agencia;
     this.conta = conta;
@@ -6,7 +7,7 @@ function Conta(agencia, conta, saldo) {
 
 Conta.prototype.sacar = function(valor){
     if(valor > this.saldo){
-        console.log(`Saldo Insuficiente: ${this.saldo}`);
+        console.log(`Saldo Insuficiente: R$${this.saldo.toFixed(2)}`);
         return
     }
     this.saldo -= valor;
@@ -24,12 +25,24 @@ Conta.prototype.verSaldo = function(){
         `Saldo: R$${this.saldo.toFixed(2)}`
     );
 }
-
-const conta1 = new Conta(11, 22, 10)
-conta1.depositar(11);
-conta1.depositar(10);
-conta1.sacar(30)
-
 function ContaCorrente(agencia, conta, saldo,limite){
+    Conta.call(this, agencia, conta, saldo)
+    this.limite = limite
+}
+ContaCorrente.prototype = Object.create(Conta.prototype)
+ContaCorrente.prototype.constructor = ContaCorrente
+
+ContaCorrente.prototype.sacar = function(valor){
+    if(valor > this.saldo + this.limite){
+        console.log(`Saldo Insuficiente: ${this.saldo}`);
+        return
+    }
+    this.saldo -= valor;
+    this.verSaldo();
     
 }
+
+const contaCorrente = new ContaCorrente(11, 22, 0,100)
+contaCorrente.depositar(10)
+contaCorrente.sacar(90)
+contaCorrente.sacar(40)
